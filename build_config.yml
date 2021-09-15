@@ -1,0 +1,5 @@
+elm:
+  - file: "src/Main.elm"
+    output: "build/dist/javascripts/app.js"
+
+stylus:
