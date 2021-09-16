@@ -14,20 +14,24 @@ import Madlib.Mixin as Mixin
 import Style
 import Icon
 import Ports
+import Music exposing (Music, RawMusic)
 
 
 type Msg
   = ClickMinimize
   | ClickClose
+  | LoadMusic RawMusic
 
 
 type alias Model =
-  {}
+  { musics : List Music
+  }
 
 
 init : () -> Response Model Msg
 init flags =
-  {}
+  { musics = []
+  }
     |> withNone
 
 
@@ -42,10 +46,18 @@ update msg model =
       model
         |> withCmd (Ports.close ())
 
+    LoadMusic music ->
+      { model
+        | musics = List.append model.musics [(Music.gen music)]
+      }
+        |> withNone
+
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Sub.none
+  Sub.batch
+    [ Ports.loadMusic LoadMusic
+    ]
 
 
 view : Model -> Document Msg
@@ -65,6 +77,7 @@ viewMain model =
   column
     []
     [ viewTitleBar
+    , viewMusics model
     ]
 
 
@@ -105,6 +118,21 @@ viewTitleBar =
         ]
         [ Icon.line "close" (Css.px 18)
         ]
+    ]
+
+
+viewMusics : Model -> Html Msg
+viewMusics model =
+  column
+    []
+    (List.map viewMusic model.musics)
+
+
+viewMusic : Music -> Html Msg
+viewMusic music =
+  row
+    []
+    [ text (music.metadata.title |> Maybe.withDefault music.path)
     ]
 
 

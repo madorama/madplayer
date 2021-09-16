@@ -4,8 +4,10 @@
   "author": "madorama",
   "dependencies": {
     "electron": "^14.0.1",
+    "file-type": "^16.5.3",
     "mousetrap": "^1.6.5",
-    "music-metadata": "^7.11.4"
+    "music-metadata": "^7.11.4",
+    "readdirp": "^3.6.0"
   },
   "devDependencies": {
     "@types/mousetrap": "^1.6.8",
