@@ -10,6 +10,7 @@ import Response exposing (..)
 
 import Madlib.Layout exposing (..)
 import Madlib.Mixin as Mixin
+import Madlib.Css as Css
 
 import Style
 import Icon
@@ -75,7 +76,13 @@ view model =
 viewMain : Model -> Html Msg
 viewMain model =
   column
-    []
+    [ Attr.css
+        [ Css.width (Css.pct 100)
+        , Css.height (Css.pct 100)
+        , Css.backgroundColor (Css.hex "20242A")
+        , Css.color (Css.hex "f0f0f0")
+        ]
+    ]
     [ viewTitleBar
     , viewMusics model
     ]
@@ -124,14 +131,38 @@ viewTitleBar =
 viewMusics : Model -> Html Msg
 viewMusics model =
   column
-    []
+    [ Attr.css
+        [ Css.height (Css.pct 100)
+        , Css.overflowY Css.auto
+        -- ScrollBar
+        , Css.pseudoElement "-webkit-scrollbar"
+            [ Css.width (Css.px 10)
+            , Css.backgroundColor (Css.colorLighten 0.05 (Css.hex "10141A"))
+            ]
+        , Css.pseudoElement "-webkit-scrollbar-track"
+            [ Css.boxShadow5 Css.inset Css.zero Css.zero (Css.px 1) (Css.hex "10141A")
+            ]
+        , Css.pseudoElement "-webkit-scrollbar-thumb"
+            [ Css.borderRadius (Css.px 8)
+            , Css.backgroundColor (Css.colorAlpha 0.5 (Css.hex "70747A"))
+            ]
+        ]
+    ]
     (List.map viewMusic model.musics)
 
 
 viewMusic : Music -> Html Msg
 viewMusic music =
   row
-    []
+    [ Attr.class "music"
+    , Attr.css
+        [ Css.padding (Css.px 8)
+        , Css.width (Css.pct 100)
+        , Css.nthChild "even"
+            [ Css.backgroundColor (Css.colorLighten 0.075 (Css.hex "20242A"))
+            ]
+        ]
+    ]
     [ text (music.metadata.title |> Maybe.withDefault music.path)
     ]
 
