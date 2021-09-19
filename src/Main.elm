@@ -6,6 +6,7 @@ import Html.Styled.Attributes as Attr
 import Html.Styled.Events exposing (..)
 import Css
 import Css.Global as G
+import Css.Transitions as T
 import Response exposing (..)
 
 import Madlib.Layout exposing (..)
@@ -84,6 +85,7 @@ viewMain model =
         ]
     ]
     [ viewTitleBar
+    , viewPlayer model
     , viewMusics model
     ]
 
@@ -124,6 +126,48 @@ viewTitleBar =
         , onClick ClickClose
         ]
         [ Icon.line "close" (Css.px 18)
+        ]
+    ]
+
+
+viewPlayer : Model -> Html Msg
+viewPlayer model =
+  let
+    buttonStyle =
+      Attr.css
+        [ Css.cursor Css.pointer
+        , Css.width (Css.px 32)
+        , Css.height (Css.px 32)
+        , centering
+        , T.transition
+            [ T.backgroundColor 160
+            ]
+        , Css.hover
+            [ Css.backgroundColor (Css.hex "50546A")
+            ]
+        ]
+  in
+  row
+    []
+    [ row
+        [ buttonStyle
+        ]
+        [ Icon.fill "stop" (Css.px 24)
+        ]
+    , row
+        [ buttonStyle
+        ]
+        [ Icon.fill "play" (Css.px 24)
+        ]
+    , row
+        [ buttonStyle
+        ]
+        [ Icon.fill "skip-back" (Css.px 24)
+        ]
+    , row
+        [ buttonStyle
+        ]
+        [ Icon.fill "skip-forward" (Css.px 24)
         ]
     ]
 
