@@ -48,7 +48,10 @@ export namespace Elm {
     interface Ports {
       minimize: Subscribe<void>,
       close: Subscribe<void>,
-      loadMusic: Send<Music>
+      loadMusic: Send<Music>,
+      playMusic: Subscribe<string>,
+      resumeMusic: Subscribe<void>
+      pauseMusic: Subscribe<void>,
     }
   }
 }

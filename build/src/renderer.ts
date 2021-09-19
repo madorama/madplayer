@@ -1,5 +1,6 @@
 import * as Mousetrap from "mousetrap"
 import { Elm } from "./Main.elm"
+import * as audio from "./audio"
 
 Mousetrap.bind("ctrl+r", function() {
   window.api.reload()
@@ -16,6 +17,18 @@ window.ports = elm => {
 
   elm.ports.close.subscribe(() => {
     window.api.close()
+  })
+
+  elm.ports.playMusic.subscribe(src => {
+    audio.play(src)
+  })
+
+  elm.ports.resumeMusic.subscribe(() => {
+    audio.resume()
+  })
+
+  elm.ports.pauseMusic.subscribe(() => {
+    audio.pause()
   })
 
   document.ondrop = document.ondragover = e => {

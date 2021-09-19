@@ -9,3 +9,12 @@ port close : () -> Cmd msg
 
 
 port loadMusic : (RawMusic -> msg) -> Sub msg
+
+
+port playMusic : String -> Cmd msg
+
+
+port resumeMusic : () -> Cmd msg
+
+
+port pauseMusic : () -> Cmd msg

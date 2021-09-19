@@ -8,9 +8,11 @@ import Css
 import Css.Global as G
 import Css.Transitions as T
 import Response exposing (..)
+import List.Extra as List
 
 import Madlib.Layout exposing (..)
 import Madlib.Mixin as Mixin
+import Madlib.Html.Attribute as Attr
 import Madlib.Css as Css
 
 import Style
@@ -23,16 +25,23 @@ type Msg
   = ClickMinimize
   | ClickClose
   | LoadMusic RawMusic
+  | PlayMusic Int
+  | ClickPlay
+  | ClickPause
 
 
 type alias Model =
   { musics : List Music
+  , isPlay : Bool
+  , lastPlayIndex : Maybe Int
   }
 
 
 init : () -> Response Model Msg
 init flags =
   { musics = []
+  , isPlay = False
+  , lastPlayIndex = Nothing
   }
     |> withNone
 
@@ -53,6 +62,48 @@ update msg model =
         | musics = List.append model.musics [(Music.gen music)]
       }
         |> withNone
+
+    PlayMusic index ->
+      let
+        music =
+          model.musics
+            |> List.getAt index
+      in
+      { model
+        | isPlay = True
+        , lastPlayIndex = Just index
+      }
+        |> withCmd
+          ( case music of
+              Just m ->
+                Ports.playMusic m.path
+
+              Nothing ->
+                Cmd.none
+          )
+
+    ClickPlay ->
+      case model.lastPlayIndex of
+        Just _ ->
+          { model
+            | isPlay = True
+          }
+            |> withCmd (Ports.resumeMusic ())
+
+        Nothing ->
+          model
+            |> withNone
+
+    ClickPause ->
+      if model.isPlay then
+        { model
+          | isPlay = False
+        }
+          |> withCmd (Ports.pauseMusic ())
+
+      else
+        model
+          |> withNone
 
 
 subscriptions : Model -> Sub Msg
@@ -146,6 +197,22 @@ viewPlayer model =
             [ Css.backgroundColor (Css.hex "50546A")
             ]
         ]
+
+    playButton =
+      row
+        [ buttonStyle
+        , onClick ClickPlay
+        ]
+        [ Icon.fill "play" (Css.px 24)
+        ]
+
+    pauseButton =
+      row
+        [ buttonStyle
+        , onClick ClickPause
+        ]
+        [ Icon.fill "pause" (Css.px 24)
+        ]
   in
   row
     []
@@ -154,11 +221,11 @@ viewPlayer model =
         ]
         [ Icon.fill "stop" (Css.px 24)
         ]
-    , row
-        [ buttonStyle
-        ]
-        [ Icon.fill "play" (Css.px 24)
-        ]
+    , if model.isPlay then
+        pauseButton
+
+      else
+        playButton
     , row
         [ buttonStyle
         ]
@@ -192,18 +259,26 @@ viewMusics model =
             ]
         ]
     ]
-    (List.map viewMusic model.musics)
+    (List.indexedMap (viewMusic model) model.musics)
 
 
-viewMusic : Music -> Html Msg
-viewMusic music =
+viewMusic : Model -> Int -> Music -> Html Msg
+viewMusic model index music =
   row
     [ Attr.class "music"
+    , onClick (PlayMusic index)
+    , Attr.maybe model.lastPlayIndex
+        (\i ->
+            Attr.when (i == index) (Attr.class "selected")
+        )
     , Attr.css
         [ Css.padding (Css.px 8)
         , Css.width (Css.pct 100)
         , Css.nthChild "even"
             [ Css.backgroundColor (Css.colorLighten 0.075 (Css.hex "20242A"))
+            ]
+        , G.withClass "selected"
+            [ Css.backgroundColor (Css.hex "40445A")
             ]
         ]
     ]
