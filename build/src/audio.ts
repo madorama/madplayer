@@ -1,4 +1,4 @@
-let audioPlayer = new Audio()
+const audioPlayer = new Audio()
 audioPlayer.volume = 0.5
 
 export const play = (src: string) => {

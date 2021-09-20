@@ -2,15 +2,15 @@ import * as Mousetrap from "mousetrap"
 import { Elm } from "./Main.elm"
 import * as audio from "./audio"
 
-Mousetrap.bind("ctrl+r", function() {
+Mousetrap.bind("ctrl+r", function () {
   window.api.reload()
 })
 
-Mousetrap.bind("ctrl+shift+i", function() {
+Mousetrap.bind("ctrl+shift+i", function () {
   window.api.toggleDevTools()
 })
 
-window.ports = elm => {
+window.ports = (elm) => {
   elm.ports.minimize.subscribe(() => {
     window.api.minimize()
   })
@@ -19,7 +19,7 @@ window.ports = elm => {
     window.api.close()
   })
 
-  elm.ports.playMusic.subscribe(src => {
+  elm.ports.playMusic.subscribe((src) => {
     audio.play(src)
   })
 
@@ -31,28 +31,33 @@ window.ports = elm => {
     audio.pause()
   })
 
-  document.ondrop = document.ondragover = e => {
+  document.ondrop = document.ondragover = (e) => {
     e.preventDefault()
     return false
   }
 
-  document.body.ondrop = e => {
-    if(e.dataTransfer === null) return
+  document.body.ondrop = (e) => {
+    if (e.dataTransfer === null) return
 
-    const paths =
-      Array
-      .from(e.dataTransfer.files)
-      .map(file => file.path)
+    const paths = Array.from(e.dataTransfer.files).map((file) => file.path)
 
-    window.api.loadAudios(paths).then(xs => {
-      for(const data of xs) {
+    window.api.loadAudios(paths).then((xs) => {
+      for (const data of xs) {
         const metadata = data.metadata
-        const tagType = metadata.format.tagTypes![0]
+
+        if (metadata.format.tagTypes === undefined) {
+          continue
+        }
+        if (metadata.format.duration === undefined) {
+          continue
+        }
+
+        const tagType = metadata.format.tagTypes[0]
         let rawData: Elm.RawData[] = []
 
-        if(tagType === "exif") {
+        if (tagType === "exif") {
           rawData = metadata.native.exif
-        } else if(tagType === "vorbis") {
+        } else if (tagType === "vorbis") {
           rawData = metadata.native.vorbis
         }
 
@@ -63,7 +68,7 @@ window.ports = elm => {
             artist: metadata.common?.artist || null,
             genres: metadata.common.genre || [],
             comment: metadata.common.comment?.shift() || null,
-            bpm: Number(metadata.common.bpm) || null
+            bpm: Number(metadata.common.bpm) || null,
           },
           rawData,
         }
@@ -71,7 +76,7 @@ window.ports = elm => {
         const music = {
           path: data.path,
           duration: metadata.format.duration!,
-          rawMetadata
+          rawMetadata,
         }
 
         elm.ports.loadMusic.send(music)

@@ -12,7 +12,7 @@ class Main {
   private app: App
   private readonly mainUrl = url.format({
     pathname: path.join(__dirname, "index.html"),
-    protocol: "file:"
+    protocol: "file:",
   })
 
   constructor(app: App) {
@@ -20,7 +20,7 @@ class Main {
     this.app.on("window-all-closed", () => this.app.quit())
     this.app.on("ready", () => this.ready())
     this.app.on("activate", () => {
-      if(this.window === null) this.ready()
+      if (this.window === null) this.ready()
     })
   }
 
@@ -39,8 +39,8 @@ class Main {
         nodeIntegrationInWorker: false,
         contextIsolation: true,
         nativeWindowOpen: true,
-        preload: path.join(__dirname, "preload.js")
-      }
+        preload: path.join(__dirname, "preload.js"),
+      },
     })
 
     win.loadURL(this.mainUrl)
@@ -50,16 +50,14 @@ class Main {
   private ready() {
     const win = this.createWindow()
     win.on("closed", () => {
-      this.window = null;
+      this.window = null
     })
 
     win.setMenu(null)
     this.window = win
 
     IpcMain.handle("toggleDevTools", () => {
-      win.webContents.isDevToolsOpened()
-        ? win.webContents.closeDevTools()
-        : win.webContents.openDevTools()
+      win.webContents.isDevToolsOpened() ? win.webContents.closeDevTools() : win.webContents.openDevTools()
     })
 
     IpcMain.handle("reload", () => {
@@ -80,18 +78,23 @@ class Main {
         return ft !== undefined && ft.mime.startsWith("audio")
       }
 
-      const files = (await Promise.all(paths.map(async p => {
-        const stat = fs.statSync(p)
-        if(stat.isDirectory()) {
-          const files = await readdirp.promise(p)
-          return await Promise.all(files.map(f => test(f.fullPath))).then(res => files.filter((_, i) => res[i]).map(f => f.fullPath))
-        }
-        return (await test(p)) ? [p] : []
-      }))).flat()
+      const files = (
+        await Promise.all(
+          paths.map(async (p) => {
+            const stat = fs.statSync(p)
+            if (stat.isDirectory()) {
+              const files = await readdirp.promise(p)
+              return await Promise.all(files.map((f) => test(f.fullPath))).then((res) =>
+                files.filter((_, i) => res[i]).map((f) => f.fullPath)
+              )
+            }
+            return (await test(p)) ? [p] : []
+          })
+        )
+      ).flat()
 
       return Promise.all(
-        files
-        .map(async filePath => {
+        files.map(async (filePath) => {
           const metadata = await mm.parseFile(filePath)
           return {
             path: filePath,

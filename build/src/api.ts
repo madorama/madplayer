@@ -2,8 +2,8 @@ import { IpcRenderer } from "./ipcWrapper"
 import * as mm from "music-metadata"
 
 interface ApiReqRes<Req, Res> {
-  request: Req,
-  response: Res,
+  request: Req
+  response: Res
 }
 
 interface ApiData {
@@ -11,36 +11,45 @@ interface ApiData {
   toggleDevTools: ApiReqRes<void, void>
   minimize: ApiReqRes<void, void>
   close: ApiReqRes<void, void>
-  loadAudios: ApiReqRes<string[], { path: string, metadata: mm.IAudioMetadata }[]>
+  loadAudios: ApiReqRes<
+    string[],
+    {
+      path: string
+      metadata: mm.IAudioMetadata
+    }[]
+  >
 }
 
-export type ApiRequest = { readonly [K in keyof ApiData]: ApiData[K]["request"] }
-export type ApiResponse = { readonly [K in keyof ApiData]: ApiData[K]["response"] }
+export type ApiRequest = {
+  readonly [K in keyof ApiData]: ApiData[K]["request"]
+}
+export type ApiResponse = {
+  readonly [K in keyof ApiData]: ApiData[K]["response"]
+}
 export type ApiChannel = keyof ApiData
 
-export type ResponseType<K extends keyof ApiData> =
-  ApiResponse[K] extends void
-    ? void
-    : Promise<ApiResponse[K]>
+export type ResponseType<K extends keyof ApiData> = ApiResponse[K] extends void ? void : Promise<ApiResponse[K]>
 
-export type Api = { [K in keyof ApiData]: (req: ApiRequest[K]) => ResponseType<K> }
+export type Api = {
+  [K in keyof ApiData]: (req: ApiRequest[K]) => ResponseType<K>
+}
 
 export const api: Api = {
-  reload: req => {
+  reload: (req) => {
     IpcRenderer.invoke("reload", req)
   },
 
-  toggleDevTools: req => {
+  toggleDevTools: (req) => {
     IpcRenderer.invoke("toggleDevTools", req)
   },
 
-  minimize: req => {
+  minimize: (req) => {
     IpcRenderer.invoke("minimize", req)
   },
 
-  close: req => {
+  close: (req) => {
     IpcRenderer.invoke("close", req)
   },
 
-  loadAudios: paths => IpcRenderer.invoke("loadAudios", paths)
+  loadAudios: (paths) => IpcRenderer.invoke("loadAudios", paths),
 } as const
