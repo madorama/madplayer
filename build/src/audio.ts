@@ -18,3 +18,8 @@ export const stop = () => {
   audioPlayer.pause()
   audioPlayer.currentTime = 0
 }
+
+export const reset = () => {
+  stop()
+  audioPlayer.src = ""
+}

@@ -49,6 +49,7 @@ export namespace Elm {
       resumeMusic: Subscribe<void>
       pauseMusic: Subscribe<void>
       stopMusic: Subscribe<void>
+      resetMusic: Subscribe<void>
     }
   }
 }

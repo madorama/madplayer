@@ -29,6 +29,7 @@ type Msg
   | ClickPlay
   | ClickPause
   | ClickStop
+  | ClickNext
 
 
 type alias Model =
@@ -111,6 +112,42 @@ update msg model =
         | isPlay = False
       }
         |> withCmd (Ports.stopMusic ())
+
+    ClickNext ->
+      let
+        nextIndex =
+          model.lastPlayIndex
+            |> Maybe.map
+                (\i ->
+                    let
+                      len =
+                        List.length model.musics
+                    in
+                    min len (i + 1)
+                )
+
+        music =
+          nextIndex
+            |> Maybe.andThen
+                (\i ->
+                    model.musics
+                      |> List.getAt i
+                )
+      in
+      case music of
+        Nothing ->
+          { model
+            | isPlay = False
+            , lastPlayIndex = nextIndex
+          }
+            |> withCmd (Ports.resetMusic ())
+
+        Just m ->
+          { model
+            | isPlay = True
+            , lastPlayIndex = nextIndex
+          }
+            |> withCmd (Ports.playMusic m.path)
 
 
 subscriptions : Model -> Sub Msg
@@ -245,6 +282,7 @@ viewPlayer model =
         ]
     , row
         [ buttonStyle
+        , onClick ClickNext
         ]
         [ Icon.fill "skip-forward" (Css.px 24)
         ]

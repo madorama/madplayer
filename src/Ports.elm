@@ -21,3 +21,6 @@ port pauseMusic : () -> Cmd msg
 
 
 port stopMusic : () -> Cmd msg
+
+
+port resetMusic : () -> Cmd msg
