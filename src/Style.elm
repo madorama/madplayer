@@ -26,7 +26,7 @@ titleBar : Style
 titleBar =
   let
     backColor =
-      Css.hex "303440"
+      Css.hex "303438"
   in
   Css.batch
     [ Css.width (Css.pct 100)

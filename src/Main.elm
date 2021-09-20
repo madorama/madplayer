@@ -131,7 +131,7 @@ viewMain model =
     [ Attr.css
         [ Css.width (Css.pct 100)
         , Css.height (Css.pct 100)
-        , Css.backgroundColor (Css.hex "20242A")
+        , Css.backgroundColor (Css.hex "202428")
         , Css.color (Css.hex "f0f0f0")
         ]
     ]
@@ -215,7 +215,11 @@ viewPlayer model =
         ]
   in
   row
-    []
+    [ Attr.css
+        [ Css.width (Css.pct 100)
+        , Css.backgroundColor (Css.hex "24282C")
+        ]
+    ]
     [ row
         [ buttonStyle
         ]
@@ -248,14 +252,14 @@ viewMusics model =
         -- ScrollBar
         , Css.pseudoElement "-webkit-scrollbar"
             [ Css.width (Css.px 10)
-            , Css.backgroundColor (Css.colorLighten 0.05 (Css.hex "10141A"))
+            , Css.backgroundColor (Css.colorLighten 0.05 (Css.hex "101418"))
             ]
         , Css.pseudoElement "-webkit-scrollbar-track"
-            [ Css.boxShadow5 Css.inset Css.zero Css.zero (Css.px 1) (Css.hex "10141A")
+            [ Css.boxShadow5 Css.inset Css.zero Css.zero (Css.px 1) (Css.hex "101418")
             ]
         , Css.pseudoElement "-webkit-scrollbar-thumb"
             [ Css.borderRadius (Css.px 8)
-            , Css.backgroundColor (Css.colorAlpha 0.5 (Css.hex "70747A"))
+            , Css.backgroundColor (Css.colorAlpha 0.5 (Css.hex "606468"))
             ]
         ]
     ]
@@ -275,10 +279,10 @@ viewMusic model index music =
         [ Css.padding (Css.px 8)
         , Css.width (Css.pct 100)
         , Css.nthChild "even"
-            [ Css.backgroundColor (Css.colorLighten 0.075 (Css.hex "20242A"))
+            [ Css.backgroundColor (Css.colorLighten 0.025 (Css.hex "202428"))
             ]
         , G.withClass "selected"
-            [ Css.backgroundColor (Css.hex "40445A")
+            [ Css.backgroundColor (Css.hex "404448")
             ]
         ]
     ]
