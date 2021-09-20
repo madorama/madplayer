@@ -31,6 +31,10 @@ window.ports = (elm) => {
     audio.pause()
   })
 
+  elm.ports.stopMusic.subscribe(() => {
+    audio.stop()
+  })
+
   document.ondrop = document.ondragover = (e) => {
     e.preventDefault()
     return false

@@ -13,3 +13,8 @@ export const resume = () => {
 export const pause = () => {
   audioPlayer.pause()
 }
+
+export const stop = () => {
+  audioPlayer.pause()
+  audioPlayer.currentTime = 0
+}

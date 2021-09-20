@@ -18,3 +18,6 @@ port resumeMusic : () -> Cmd msg
 
 
 port pauseMusic : () -> Cmd msg
+
+
+port stopMusic : () -> Cmd msg

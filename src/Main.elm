@@ -28,6 +28,7 @@ type Msg
   | PlayMusic Int
   | ClickPlay
   | ClickPause
+  | ClickStop
 
 
 type alias Model =
@@ -104,6 +105,12 @@ update msg model =
       else
         model
           |> withNone
+
+    ClickStop ->
+      { model
+        | isPlay = False
+      }
+        |> withCmd (Ports.stopMusic ())
 
 
 subscriptions : Model -> Sub Msg
@@ -222,6 +229,7 @@ viewPlayer model =
     ]
     [ row
         [ buttonStyle
+        , onClick ClickStop
         ]
         [ Icon.fill "stop" (Css.px 24)
         ]
