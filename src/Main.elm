@@ -29,6 +29,7 @@ type Msg
   | ClickPlay
   | ClickPause
   | ClickStop
+  | ClickPrev
   | ClickNext
 
 
@@ -113,41 +114,38 @@ update msg model =
       }
         |> withCmd (Ports.stopMusic ())
 
+    ClickPrev ->
+      movePlayMusic -1 model
+
     ClickNext ->
-      let
-        nextIndex =
-          model.lastPlayIndex
-            |> Maybe.map
-                (\i ->
-                    let
-                      len =
-                        List.length model.musics
-                    in
-                    min len (i + 1)
-                )
+      movePlayMusic 1 model
 
-        music =
-          nextIndex
-            |> Maybe.andThen
-                (\i ->
-                    model.musics
-                      |> List.getAt i
-                )
-      in
-      case music of
-        Nothing ->
-          { model
-            | isPlay = False
-            , lastPlayIndex = nextIndex
-          }
-            |> withCmd (Ports.resetMusic ())
 
-        Just m ->
-          { model
-            | isPlay = True
-            , lastPlayIndex = nextIndex
-          }
-            |> withCmd (Ports.playMusic m.path)
+movePlayMusic : Int -> Model -> Response Model Msg
+movePlayMusic at model =
+  let
+    nextIndex =
+      model.lastPlayIndex
+        |> Maybe.map (\i -> clamp -1 (List.length model.musics) (i + at))
+
+    music =
+      nextIndex
+        |> Maybe.andThen (\i -> List.getAt i model.musics)
+  in
+  case music of
+    Nothing ->
+      { model
+        | isPlay = False
+        , lastPlayIndex = nextIndex
+      }
+        |> withCmd (Ports.resetMusic ())
+
+    Just m ->
+      { model
+        | isPlay = True
+        , lastPlayIndex = nextIndex
+      }
+        |> withCmd (Ports.playMusic m.path)
 
 
 subscriptions : Model -> Sub Msg
@@ -277,6 +275,7 @@ viewPlayer model =
         playButton
     , row
         [ buttonStyle
+        , onClick ClickPrev
         ]
         [ Icon.fill "skip-back" (Css.px 24)
         ]
