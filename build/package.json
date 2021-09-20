@@ -23,6 +23,7 @@
     "webpack-cli": "^4.8.0"
   },
   "prettier": {
-    "semi": false
+    "semi": false,
+    "printWidth": 120
   }
 }
