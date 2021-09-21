@@ -83,7 +83,7 @@ window.ports = (elm) => {
 
         const music = {
           path: data.path,
-          duration: metadata.format.duration!,
+          duration: metadata.format.duration,
           rawMetadata,
         }
 

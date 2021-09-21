@@ -24,7 +24,7 @@ export namespace Elm {
     readonly value: string
   }
 
-  namespace Main {
+  export namespace Main {
     interface Flags {}
 
     export function init(options: { node?: HTMLElement | null; flags: Flags }): App
