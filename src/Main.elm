@@ -285,6 +285,18 @@ viewPlayer model =
         ]
         [ Icon.fill "skip-forward" (Css.px 24)
         ]
+    , row
+        []
+        [ canvas
+            [ Attr.id "visualizer"
+            , Attr.width 128
+            , Attr.height 32
+            , Attr.css
+                [ Css.backgroundColor (Css.hex "101418")
+                ]
+            ]
+            []
+        ]
     ]
 
 

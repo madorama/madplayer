@@ -21,6 +21,11 @@ window.ports = (elm) => {
 
   elm.ports.playMusic.subscribe((src) => {
     audio.play(src)
+
+    const canvas: HTMLCanvasElement | null = document.querySelector("#visualizer")
+    if (canvas !== null) {
+      audio.visualize(canvas)
+    }
   })
 
   elm.ports.resumeMusic.subscribe(() => {
